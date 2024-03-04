@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ENUM 정의
+enum Status {
+  Y
+  W
+  N
+  D
+}
+
+enum MsgType {
+  EMAIL
+  SMS
+  PUSH
+}
+
+enum SiteType {
+  HEAL_GUARD
+  MEAL_GUARD
+  PILL_GUARD
+  MYEONJEOB_BOKKA
+}
+
+enum AuthProvider {
+  LOCAL
+  KAKAO
+  NAVER
+  GOOGLE
+}
+
+// MODEL 정의
+model User {
+  userSeq   String            @id @unique @default(uuid()) @map("user_seq")
+  password  String?
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  sites     UserSiteMapping[]
+
+  @@map("AT_MB_USER")
+}
+
+model Site {
+  name      SiteType          @id @unique
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+  users     UserSiteMapping[]
+
+  @@map("AT_MB_SITE")
+}
+
+model UserSiteMapping {
+  seq          String       @id @unique @default(uuid())
+  userSeq      String       @unique @map("user_seq")
+  userId       String       @map("user_id")
+  siteName     SiteType     @map("site_name")
+  authProvider AuthProvider @default(LOCAL) @map("auth_provider")
+  user         User         @relation(fields: [userSeq], references: [userSeq], onDelete: Cascade)
+  site         Site         @relation(fields: [siteName], references: [name])
+
+  @@unique([userId, siteName, authProvider], name: "userSiteAuthProvider")
+  @@map("AT_MB_USER_SITE_MAPPING")
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  msgType   MsgType  @map("msg_type")
+  status    Status
+  receiver  String
+  title     String?
+  content   String
+  sender    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("AT_MB_MESSAGE")
+}
+
+model IpBlackList {
+  id Int    @id @default(autoincrement())
+  ip String
+
+  @@map("AT_MB_IP_BLACK_LIST")
+}
+
+model TokenBlackList {
+  id    Int    @id @default(autoincrement())
+  token String @unique @db.VarChar(500)
+
+  @@map("AT_MB_TOKEN_BLACK_LIST")
+}
+
+model LoginHistory {
+  id        Int      @id @default(autoincrement())
+  userSeq   String   @map("user_seq")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("AT_MB_LOGIN_HISTORY")
+}
