@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CustomCqrsModule } from './public/cqrs/custom-cqrs.module';
 import { PrismaModule } from './public/prisma/prisma.module';
 import { RedisCacheModule } from './public/redis/redis-cache.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RedisCacheModule } from './public/redis/redis-cache.module';
     PrismaModule,
     RedisCacheModule,
     CustomCqrsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
