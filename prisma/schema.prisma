@@ -46,15 +46,16 @@ model User {
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
   authProvider AuthProvider @default(LOCAL) @map("auth_provider")
-  siteName     SiteType     @map("site_name")
-  site         Site         @relation(fields: [siteName], references: [name])
+  siteType     SiteType     @map("site_type")
+  site         Site         @relation(fields: [siteType], references: [siteType])
 
-  @@unique([userId, siteName], name: "userIdSiteName")
+  @@unique([userId, siteType], name: "userIdSiteType")
   @@map("AT_MB_USER")
 }
 
 model Site {
-  name      SiteType @id @unique
+  siteType  SiteType @id @unique
+  name      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   users     User[]
