@@ -40,7 +40,6 @@ export class AuthController {
       loginResult.accessToken = accessToken;
       loginResult.refreshToken = refreshToken;
     } catch (e) {
-      console.log(e);
       loginResult.failerErrorStatus = e.response;
     } finally {
       const loginHistoryDto: LoginHistoryEvent = {
