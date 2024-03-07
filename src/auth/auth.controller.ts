@@ -1,7 +1,10 @@
 import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
 import { LoginQuery } from './queries/login.query';
 import { EventBus, QueryBus } from '@nestjs/cqrs';
-import { HeaderToken } from 'src/public/interfaces/common.interface';
+import {
+  BaseExceptionErrorStateInferface,
+  HeaderToken,
+} from 'src/public/interfaces/common.interface';
 import {
   Response as ExpressResponse,
   Request as ExpressRequest,
@@ -12,7 +15,7 @@ interface LoginResult {
   success: boolean;
   accessToken?: string;
   refreshToken?: string;
-  failureReason?: string;
+  failerErrorStatus?: BaseExceptionErrorStateInferface;
 }
 
 @Controller('auth')
@@ -37,13 +40,15 @@ export class AuthController {
       loginResult.accessToken = accessToken;
       loginResult.refreshToken = refreshToken;
     } catch (e) {
-      loginResult.failureReason = e.message;
+      console.log(e);
+      loginResult.failerErrorStatus = e.response;
     } finally {
       const loginHistoryDto: LoginHistoryEvent = {
         userId: loginQuery.userId,
         siteType: loginQuery.siteType,
         ipAddress: req.ip,
         success: loginResult.success,
+        code: loginResult.success ? 1000 : loginResult.failerErrorStatus.code,
         userAgent: req.headers['user-agent'],
       };
       await this.eventBus.publish(new LoginHistoryEvent(loginHistoryDto));
@@ -53,7 +58,7 @@ export class AuthController {
           httpOnly: true,
         });
         res.send();
-      } else res.status(401).send(loginResult.failureReason);
+      } else res.status(401).send(loginResult.failerErrorStatus);
     }
   }
 }

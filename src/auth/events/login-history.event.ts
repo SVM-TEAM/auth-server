@@ -7,6 +7,7 @@ export class LoginHistoryEvent implements IEvent {
   readonly ipAddress: string;
   readonly success: boolean;
   readonly userAgent: string;
+  readonly code: number;
 
   constructor(loginHistoryEvent: LoginHistoryEvent) {
     Object.assign(this, loginHistoryEvent);

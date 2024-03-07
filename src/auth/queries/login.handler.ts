@@ -4,6 +4,8 @@ import { PrismaService } from 'src/public/prisma/prisma.service';
 import { AuthService } from '../auth.service';
 import { HeaderToken } from 'src/public/interfaces/common.interface';
 import * as bcrypt from 'bcrypt';
+import { InvalidUserException } from 'src/public/exceptions/user.exception';
+import { NotReadyEmailAuthentication } from 'src/public/exceptions/auth.exception';
 
 @QueryHandler(LoginQuery)
 export class LoginQueryHandler implements IQueryHandler<LoginQuery> {
@@ -28,10 +30,8 @@ export class LoginQueryHandler implements IQueryHandler<LoginQuery> {
       ? await bcrypt.compare(query.password, user.password)
       : false;
 
-    if (!isValidPassword) throw new Error('유효한 유저가 아닙니다.');
-    if (!user.verifyCode.isVerify)
-      throw new Error('이메일 인증을 먼저 시도해주세요.');
-
+    if (!isValidPassword) throw new InvalidUserException();
+    if (!user.verifyCode.isVerify) throw new NotReadyEmailAuthentication();
     return this.authService.authentication(user.userSeq);
   }
 }
