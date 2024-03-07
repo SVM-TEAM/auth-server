@@ -2,7 +2,7 @@ import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { SignUpEvent } from './sign-up.event';
 import { MailService } from 'src/mail/mail.service';
 import Mail from 'nodemailer/lib/mailer';
-import { signUpUserMailForm } from 'src/public/html-forms/mail.from';
+import { signUpUserMailForm } from 'src/public/html-forms/mail.form';
 import { PrismaService } from 'src/public/prisma/prisma.service';
 @EventsHandler(SignUpEvent)
 export class SignUpEventHandler implements IEventHandler<SignUpEvent> {
