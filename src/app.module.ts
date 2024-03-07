@@ -8,6 +8,7 @@ import { PrismaModule } from './public/prisma/prisma.module';
 import { RedisCacheModule } from './public/redis/redis-cache.module';
 import { UserModule } from './user/user.module';
 import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MailModule } from './mail/mail.module';
     CustomCqrsModule,
     UserModule,
     MailModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
