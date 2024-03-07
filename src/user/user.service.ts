@@ -3,6 +3,7 @@ import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 import { CheckUserIdQuery } from './queries/check-user-id.query';
 import { SignUpCommand } from './commands/sign-up.command';
 import { SignUpEvent } from './events/sign-up.event';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,6 @@ export class UserService {
 
   async create(dto: SignUpCommand): Promise<void> {
     await this.commandBus.execute(new SignUpCommand(dto));
-    await this.eventBus.publish(new SignUpEvent(dto.userId));
+    await this.eventBus.publish(new SignUpEvent(dto.userId, dto.siteType));
   }
 }
