@@ -2,7 +2,6 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { SignUpCommand } from './sign-up.command';
 import { PrismaService } from 'src/public/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
 
 @CommandHandler(SignUpCommand)
 export class SignUpCommandHandler implements ICommandHandler<SignUpCommand> {
@@ -17,7 +16,7 @@ export class SignUpCommandHandler implements ICommandHandler<SignUpCommand> {
 
   private async createUser(dto: SignUpCommand) {
     const hassedPassword = await this.generateHashedPassword(dto.password);
-    return await this.prisma.user.create({
+    await this.prisma.user.create({
       data: {
         userId: dto.userId,
         password: hassedPassword,
@@ -26,7 +25,7 @@ export class SignUpCommandHandler implements ICommandHandler<SignUpCommand> {
     });
   }
 
-  async execute(command: SignUpCommand): Promise<User> {
+  async execute(command: SignUpCommand): Promise<void> {
     return this.createUser(command);
   }
 }
