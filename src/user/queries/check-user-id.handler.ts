@@ -8,13 +8,13 @@ export class CheckUserIdQueryHandler
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async execute(query: CheckUserIdQuery): Promise<boolean> {
+  async execute(query: CheckUserIdQuery): Promise<number> {
     const userCount = await this.prisma.user.count({
       where: {
         userId: query.userId,
         siteType: query.siteType,
       },
     });
-    return userCount === 0;
+    return userCount;
   }
 }

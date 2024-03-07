@@ -48,9 +48,22 @@ model User {
   authProvider AuthProvider @default(LOCAL) @map("auth_provider")
   siteType     SiteType     @map("site_type")
   site         Site         @relation(fields: [siteType], references: [siteType])
+  verifyCode   VerifyCode?
 
   @@unique([userId, siteType], name: "userIdSiteType")
   @@map("AT_MB_USER")
+}
+
+model VerifyCode {
+  verifyCode String   @id @unique @default(uuid()) @map("verify_code")
+  userSeq    String   @unique @map("user_seq")
+  isVerify   Boolean  @default(false) @map("is_verify")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userSeq], references: [userSeq])
+
+  @@map("AT_MB_VERIFY_CODE")
 }
 
 model Site {
