@@ -7,9 +7,11 @@ import { CustomCqrsModule } from './public/cqrs/custom-cqrs.module';
 import { PrismaModule } from './public/prisma/prisma.module';
 import { RedisCacheModule } from './public/redis/redis-cache.module';
 import { UserModule } from './user/user.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -24,6 +26,7 @@ import { UserModule } from './user/user.module';
     RedisCacheModule,
     CustomCqrsModule,
     UserModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

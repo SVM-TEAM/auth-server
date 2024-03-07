@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
 import { SiteType } from '@prisma/client';
 import { UserService } from './user.service';
+import { SignUpCommand } from './commands/sign-up.command';
 
 @Controller('user')
 export class UserController {
@@ -13,5 +14,11 @@ export class UserController {
     @Query('userId') userId: string,
   ) {
     return this.userService.checkUserIdDuplicaion({ userId, siteType });
+  }
+
+  @Post('sign-up')
+  @HttpCode(201)
+  async signUpUser(@Body() dto: SignUpCommand) {
+    return this.userService.create(dto);
   }
 }

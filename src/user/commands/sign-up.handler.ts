@@ -10,7 +10,7 @@ import { PrismaService } from 'src/public/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 
 @CommandHandler(SignUpCommand)
-export class SignUpHandler implements ICommandHandler<SignUpCommand> {
+export class SignUpCommandHandler implements ICommandHandler<SignUpCommand> {
   constructor(
     private readonly eventBus: EventBus,
     private readonly queryBus: QueryBus,
