@@ -2,23 +2,18 @@ import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
 import { LoginQuery } from './queries/login.query';
 import { EventBus, QueryBus } from '@nestjs/cqrs';
 import {
-  BaseExceptionErrorStateInferface,
   HeaderToken,
+  LoginResult,
 } from 'src/public/interfaces/common.interface';
 import {
   Response as ExpressResponse,
   Request as ExpressRequest,
 } from 'express';
 import { LoginHistoryEvent } from './events/login-history.event';
-
-interface LoginResult {
-  success: boolean;
-  accessToken?: string;
-  refreshToken?: string;
-  failerErrorStatus?: BaseExceptionErrorStateInferface;
-}
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('인증 api')
 export class AuthController {
   constructor(
     private readonly queryBus: QueryBus,

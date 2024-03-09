@@ -3,7 +3,7 @@ export interface HeaderToken {
   refreshToken: string;
 }
 
-export interface BaseExceptionErrorStateInferface {
+interface BaseExceptionErrorStateInferface {
   code: number;
   result: {
     error: {
@@ -14,4 +14,11 @@ export interface BaseExceptionErrorStateInferface {
 
 export interface ValidateUserInfo {
   userSeq: string;
+}
+
+export interface LoginResult {
+  success: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  failerErrorStatus?: BaseExceptionErrorStateInferface;
 }
