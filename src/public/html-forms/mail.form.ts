@@ -17,7 +17,7 @@ export const signUpUserMailForm = (
     <br/>
     <p>
         절차를 진행하려면 아래 링크를 클릭해 주세요:<br>
-        <a href="http://localhost:3000/verify?code=${verifyCode}">회원 인증하기</a>
+        <a href="http://localhost:3000/email-authentication/${verifyCode}">회원 인증하기</a>
     </p>
     <br/>
     <p>

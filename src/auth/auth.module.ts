@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { LoginQueryHandler } from './queries/login.handler';
 import { LoginHistoryEventHandler } from './events/login-history.handler';
+import { EmailAuthenticationCommandHandler } from './commands/email-authentication.handler';
 
 @Module({
   imports: [
@@ -12,7 +13,12 @@ import { LoginHistoryEventHandler } from './events/login-history.handler';
       signOptions: { algorithm: 'RS256', expiresIn: '15m' },
     }),
   ],
-  providers: [AuthService, LoginQueryHandler, LoginHistoryEventHandler],
+  providers: [
+    AuthService,
+    LoginQueryHandler,
+    LoginHistoryEventHandler,
+    EmailAuthenticationCommandHandler,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}
