@@ -9,8 +9,8 @@ export class BaseResponse<T> {
   private readonly code: number;
 
   constructor(result: T | T[], code: number) {
-    this.code = code;
     this.result = result;
+    this.code = code;
   }
 
   static success<T>(

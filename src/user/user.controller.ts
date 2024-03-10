@@ -11,6 +11,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { BaseResponse } from 'src/public/responses/response';
+import { PrismaException } from 'src/public/exceptions/prisma.exception';
 
 @Controller('user')
 @ApiTags('유저 API')
@@ -46,6 +47,11 @@ export class UserController {
   @Post('sign-up')
   @HttpCode(201)
   async signUpUser(@Body() dto: SignUpCommand) {
-    return this.userService.create(dto);
+    try {
+      await this.userService.create(dto);
+      return BaseResponse.success<boolean>(true);
+    } catch (e) {
+      throw new PrismaException(e);
+    }
   }
 }

@@ -1,6 +1,15 @@
-import { Body, Controller, HttpCode, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Query,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { LoginQuery } from './queries/login.query';
-import { EventBus, QueryBus } from '@nestjs/cqrs';
+import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 import {
   HeaderToken,
   LoginResult,
@@ -11,6 +20,8 @@ import {
 } from 'express';
 import { LoginHistoryEvent } from './events/login-history.event';
 import { ApiTags } from '@nestjs/swagger';
+import { EmailAuthenticationCommand } from './commands/email-authentication.command';
+import { BaseResponse } from 'src/public/responses/response';
 
 @Controller('auth')
 @ApiTags('인증 api')
@@ -18,6 +29,7 @@ export class AuthController {
   constructor(
     private readonly queryBus: QueryBus,
     private readonly eventBus: EventBus,
+    private readonly commandBus: CommandBus,
   ) {}
 
   @Post('login')
@@ -54,5 +66,12 @@ export class AuthController {
         res.send();
       } else res.status(401).send(loginResult.failerErrorStatus);
     }
+  }
+
+  @Get('email/authentication')
+  async emailAuthentication(@Query('verifyCode') verifyCode: string) {
+    const result: { code: number; userId: string } =
+      await this.commandBus.execute(new EmailAuthenticationCommand(verifyCode));
+    return new BaseResponse<string>(result.userId, result.code);
   }
 }
