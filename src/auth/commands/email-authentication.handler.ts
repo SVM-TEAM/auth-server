@@ -1,6 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { EmailAuthenticationCommand } from './email-authentication.command';
 import { PrismaService } from 'src/public/prisma/prisma.service';
+import axios from 'axios';
 
 @CommandHandler(EmailAuthenticationCommand)
 export class EmailAuthenticationCommandHandler
@@ -18,6 +19,7 @@ export class EmailAuthenticationCommandHandler
         },
         select: {
           isVerify: true,
+          userSeq: true,
           user: {
             select: {
               userId: true,
@@ -33,6 +35,13 @@ export class EmailAuthenticationCommandHandler
         userId: existingEmailAuthenticationUser.user.userId,
       };
     else {
+      try {
+        await axios.post('http://localhost:3050/api/user/init', {
+          userSeq: existingEmailAuthenticationUser.userSeq,
+        });
+      } catch (e) {
+        throw new Error('인증 과정에서 실패했습니다.'); // TODO
+      }
       const emailAuthenticationUser = await this.prisma.verifyCode.update({
         where: {
           verifyCode: command.verifyCode,
@@ -48,6 +57,7 @@ export class EmailAuthenticationCommandHandler
           },
         },
       });
+
       return {
         code: 1000,
         userId: emailAuthenticationUser.user.userId,
